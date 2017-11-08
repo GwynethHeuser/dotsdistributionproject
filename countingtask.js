@@ -109,7 +109,8 @@ function init() {
 			if (keys[32]) {
 				var end_time1 = new Date() - start_time1;
 				stage.removeAllChildren();
-				//var textbox = document.getElementById('box');
+				var input = document.getElementById('box');
+				stage.addChild(box);
 				stage.update();
 				var start_time2 = new Date();
 				}
