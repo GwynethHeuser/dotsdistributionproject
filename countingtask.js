@@ -95,11 +95,11 @@ function init() {
 
 		var start_time1 = new Date();
 
-		numX(5, 15);
+		numX(7, 13);
 
 		placement(numX);
 
-		createjs.Ticker.on("tick",handleTick);
+		createjs.Ticker.on("tick", handleTick);
 
 		inputs();
 
