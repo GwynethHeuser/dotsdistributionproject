@@ -51,7 +51,7 @@ function init() {
 	}
 
 	function placement(numX) {
-		for (i in numX) {
+		for (var i = 0; i < numX; i++) {
 			getrandom();
 			createX(xval, yval);
 			stage.addChild(X);
