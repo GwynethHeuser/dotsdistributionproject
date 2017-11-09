@@ -39,8 +39,8 @@ function init() {
 		return [xval, yval];
 	}
 
-	function accuracy(input, numX) {
-		var accuracy = Math.abs(numX - input); //the closer to 0, the better
+	function accuracy(answer, numX) {
+		var accuracy = Math.abs(numX - answer); //the closer to 0, the better
 		return accuracy;
 	}
 
@@ -56,7 +56,7 @@ function init() {
 			createX(xval, yval);
 			stage.addChild(X);
 			stage.update();
-		} 
+		}
 	}
 
 	function numX(low, high) {
@@ -99,43 +99,40 @@ function init() {
 
 		placement(numX);
 
-		createjs.Ticker.on("tick", handleTick);
-
-		inputs();
-
-		function inputs() {
-			trials = trials + 1;
-			function handleTick(event) {
+		function handleTick(event) {
 			if (keys[32]) {
 				var end_time1 = new Date() - start_time1;
 				stage.removeAllChildren();
-				var input = document.getElementById('box');
-				stage.addChild(box);
+				input = document.getElementById("box");
+				var answer = input.value();
+				input.show();
 				stage.update();
 				var start_time2 = new Date();
 				}
 			}
-			function handleTick(event) {
+
+		function handleTick(event) {
 			if (keys[13]) {
 				var end_time2 = new Date() - start_time2;
+				input.hide();
 				stage.removeAllChildren();
 				stage.update();
+				trials = trials + 1;
+				accuracy(answer, numX);
+				score(accuracy, end_time1);
+				display.text = "Score:" + score;
+				display.x = 400;
+				display.y = 250;
+				stage.addChild(display);
+				stage.update();
+				data.push([trials, end_time1, end_time2, answer, numX, accuracy, score, "small cue", "small number"]);
+				setTimeout(runSmallTrial, 2000); //fix?
 				}
 			}
 
-			accuracy(input, numX);
-			score(accuracy, end_time1);
-			display.text = "Score:" + score;
-			display.x = 400;
-			display.y = 250;
-			stage.addChild(display);
-			stage.update();
-			data.push([trials, end_time1, end_time2, input, numX, accuracy, score, "small cue", "small number"]);
-			setTimeout(runSmallTrial, 2000); //fix?
-		} 
+		createjs.Ticker.on("tick", handleTick);
 	}
 
 	runSmallTrial();
 	
-
 }
