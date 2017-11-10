@@ -34,8 +34,8 @@ function init() {
 	}
 
 	function getrandom() {
-		var xval = Math.floor(Math.random() * myCanvas.width);
-		var yval = Math.floor(Math.random() * myCanvas.height);
+		var xval = Math.floor(Math.random() * ((myCanvas.width-100) - 100 + 1) ) + 100;
+		var yval = Math.floor(Math.random() * ((myCanvas.height-100) - 100 + 1) ) + 100;
 		return [xval, yval];
 	}
 
@@ -46,8 +46,9 @@ function init() {
 
 	function score(accuracy, RT) {
 		//some function that gives more points for lower RT and accuracy
-		score = RT
-		return score;
+		console.log(RT);
+		s = RT.toString();
+		return s;
 	}
 
 	function placement(numX) {
@@ -95,14 +96,19 @@ function init() {
 
 		var start_time1 = new Date();
 
-		var nX=numX(7, 13);
+		var nX = numX(7, 13);
 
 		placement(nX);
 
+		var end_time1 = 0;
+		var end_time2 = 0;
+
 		function handleTick(event) {
+
 			if (keys[32]) {
 				console.log("32!");
-				var end_time1 = new Date() - start_time1;
+				end_time1 = new Date() - start_time1;
+				console.log(end_time1);
 				stage.removeAllChildren();
 				input = document.getElementById("box");
 				var answer = input.value;
@@ -112,19 +118,20 @@ function init() {
 				}
 			if (keys[13]) {
 				console.log("13!");
-				var end_time2 = new Date() - start_time2;
-				input.hide();
+				console.log(end_time1);
+				end_time2 = new Date() - start_time2;
+				input.style.display="none";
 				stage.removeAllChildren();
 				stage.update();
 				trials = trials + 1;
-				accuracy(answer, numX);
-				score(accuracy, end_time1);
-				display.text = "Score:" + score;
+				var theAccuracy = accuracy(answer, nX);
+				var theScore = score(accuracy, end_time1);
+				display.text = "Score:" + theScore;
 				display.x = 400;
 				display.y = 250;
 				stage.addChild(display);
 				stage.update();
-				data.push([trials, end_time1, end_time2, answer, numX, accuracy, score, "small cue", "small number"]);
+				data.push([trials, end_time1, end_time2, answer, nX, theAccuracy, theScore, "small cue", "small number"]);
 				setTimeout(runSmallTrial, 2000); //fix?
 				}
 			}
