@@ -46,7 +46,6 @@ function init() {
 
 	function score(accuracy, RT) {
 		//some function that gives more points for lower RT and accuracy
-		console.log(RT);
 		s = RT.toString();
 		return s;
 	}
@@ -100,15 +99,17 @@ function init() {
 
 		placement(nX);
 
+		var xonscreen = true;
+
 		var end_time1 = 0;
 		var end_time2 = 0;
 
 		function handleTick(event) {
 
-			if (keys[32]) {
-				console.log("32!");
+			if (keys[32] & xonscreen) {
+				xonscreen = false;
+				var boxonscreen = true;
 				end_time1 = new Date() - start_time1;
-				console.log(end_time1);
 				stage.removeAllChildren();
 				input = document.getElementById("box");
 				var answer = input.value;
@@ -116,9 +117,8 @@ function init() {
 				stage.update();
 				var start_time2 = new Date();
 				}
-			if (keys[13]) {
-				console.log("13!");
-				console.log(end_time1);
+			if (keys[13] & ! xonscreen) {
+				boxonscreen = false;
 				end_time2 = new Date() - start_time2;
 				input.style.display="none";
 				stage.removeAllChildren();
@@ -131,7 +131,8 @@ function init() {
 				display.y = 250;
 				stage.addChild(display);
 				stage.update();
-				data.push([trials, end_time1, end_time2, answer, nX, theAccuracy, theScore, "small cue", "small number"]);
+				data.push([trials, end_time1, end_time2, answer, nX, theAccuracy, theScore, "small cue", "small number"]); //end_time2, answer, theAccuracy not working
+				answer = ""; //isn't clearing the text box properly
 				setTimeout(runSmallTrial, 2000); //fix?
 				}
 			}
