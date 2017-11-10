@@ -28,8 +28,8 @@ function init() {
 		var X = new createjs.Text("X", "40px Arial", "black");
 		X.x = x;
 		X.y = y;
-		stage.addChild(X);
-		stage.update();
+		//stage.addChild(X);
+		//stage.update();
 		return X;
 	}
 
@@ -52,8 +52,8 @@ function init() {
 
 	function placement(numX) {
 		for (var i = 0; i < numX; i++) {
-			getrandom();
-			createX(xval, yval);
+			var positions = getrandom();
+			var X = createX(positions[0], positions[1]);
 			stage.addChild(X);
 			stage.update();
 		}
@@ -95,24 +95,23 @@ function init() {
 
 		var start_time1 = new Date();
 
-		numX(7, 13);
+		var nX=numX(7, 13);
 
-		placement(numX);
+		placement(nX);
 
 		function handleTick(event) {
 			if (keys[32]) {
+				console.log("32!");
 				var end_time1 = new Date() - start_time1;
 				stage.removeAllChildren();
 				input = document.getElementById("box");
-				var answer = input.value();
-				input.show();
+				var answer = input.value;
+				input.style.display="inline";
 				stage.update();
 				var start_time2 = new Date();
 				}
-			}
-
-		function handleTick(event) {
 			if (keys[13]) {
+				console.log("13!");
 				var end_time2 = new Date() - start_time2;
 				input.hide();
 				stage.removeAllChildren();
@@ -134,5 +133,5 @@ function init() {
 	}
 
 	runSmallTrial();
-	
+
 }
