@@ -40,8 +40,8 @@ function init() {
 	}
 
 	function accuracy(answer, numX) {
-		var accuracy = Math.abs(numX - answer); //the closer to 0, the better
-		return accuracy;
+		var acc = Math.abs(numX - answer); //the closer to 0, the better
+		return acc;
 	}
 
 	function score(accuracy, RT) {
@@ -103,6 +103,7 @@ function init() {
 
 		var end_time1 = 0;
 		var end_time2 = 0;
+		var answer = 0;
 
 		function handleTick(event) {
 
@@ -112,11 +113,13 @@ function init() {
 				end_time1 = new Date() - start_time1;
 				stage.removeAllChildren();
 				input = document.getElementById("box");
-				var answer = input.value;
+				answer = input.value;
 				input.style.display="inline";
 				stage.update();
 				var start_time2 = new Date();
 				}
+
+			//find a way to pass start_time2 through to this if statement
 			if (keys[13] & ! xonscreen) {
 				boxonscreen = false;
 				end_time2 = new Date() - start_time2;
@@ -125,13 +128,15 @@ function init() {
 				stage.update();
 				trials = trials + 1;
 				var theAccuracy = accuracy(answer, nX);
-				var theScore = score(accuracy, end_time1);
+				var theScore = score(theAccuracy, end_time1);
 				display.text = "Score:" + theScore;
 				display.x = 400;
 				display.y = 250;
 				stage.addChild(display);
 				stage.update();
-				data.push([trials, end_time1, end_time2, answer, nX, theAccuracy, theScore, "small cue", "small number"]); //end_time2, answer, theAccuracy not working
+				data.push([trials, end_time1, end_time2, answer, nX, theAccuracy, theScore, "small cue", "small number"]); //end_time2 and answer not working
+				//end_time2 shows up as NaN
+				//answer shows up as "" even if you comment out the following line
 				answer = ""; //isn't clearing the text box properly
 				setTimeout(runSmallTrial, 2000); //fix?
 				}
