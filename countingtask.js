@@ -2,11 +2,13 @@ function init() {
 	var canvas = document.getElementById("myCanvas");
 	var stage = new createjs.Stage(canvas);
 	var display = new createjs.Text("Score", "20px Arial", "black");
+	var input = document.getElementById("box");
 
 	data = []; //contains the trial number, RT of space bar press, RT of number input, subject input, exact number of Xs, accuracy of subject input, subject's score,
 	//type of cue  (small or big), approx number of dots (small or big)
 
 	var NUMTRIALS = 4;
+	var listen = true;
 
 	function cueBig() {
 		cueBigsquare = new createjs.Shape();
@@ -65,15 +67,18 @@ function init() {
 	}
 
 	var trials = 0;
-
-
 	function runSmallTrial() {
 		stage.removeAllChildren();
 		stage.update();
 
 		if (trials < NUMTRIALS) {
+			trials=trials+1;
 			var square = cueSmall();
+			var listen = true;
 			setTimeout(function() {continueSmallTrial(square)}, 2000);
+		}
+		else {
+			console.log(data);
 		}
 	//console.log(data);
 	}
@@ -96,67 +101,64 @@ function init() {
 
 		var start_time1 = new Date();
 
-		var nX = numX(7, 13);
-
+		var nX = numX(7, 7);
 		placement(nX);
-
 		var xonscreen = true;
-
 		var end_time1 = 0;
 		var end_time2 = 0;
 		var start_time2 = 0;
-
-		var answer = 0;
-		var z = 0;
+		var listen = true;
 
 		function handleTick(event) {
 
-			if (keys[32] & xonscreen) {
-				console.log("I am in the 32");
+			if (keys[32] & xonscreen & listen) {
 				xonscreen = false;
+				//listen = true;
 				var boxonscreen = true;
 				end_time1 = new Date() - start_time1;
 				stage.removeAllChildren();
-				input = document.getElementById("box");
-				answer = input.value;
-				input.style.display="inline";
 				stage.update();
+
+				input.style.display="inline";
+				input.focus();
+				input.select();
+
 				var start_time2 = new Date();
-				keys[32]=false;
+				//keys[32]=false;
 				}
 
 			//find a way to pass start_time2 through to this if statement
-			if (keys[13] & !xonscreen) {
-				console.log(z);
-				console.log("I am in the 13");
+			if (keys[13] & !xonscreen & listen) {
 				var start_time2 = new Date();
-				z = z+1;
-				console.log(start_time2);
 
-				boxonscreen = false;
 				end_time2 = new Date() - start_time2;
 				input.style.display="none";
 				stage.removeAllChildren();
-				stage.update();
-				
-				var theAccuracy = accuracy(answer, nX);
+				//stage.update();
+				var theAccuracy = accuracy(input.value, nX);
 				var theScore = score(theAccuracy, end_time1);
 				display.text = "Score:" + theScore;
 				display.x = 400;
 				display.y = 250;
-				stage.addChild(display);
-				stage.update();
-				data.push([trials, end_time1, end_time2, answer, nX, theAccuracy, theScore, "small cue", "small number"]); //end_time2 and answer not working
+
+
+				data.push([trials, end_time1, end_time2, input.value, nX, theAccuracy, theScore, "small cue", "small number"]); //end_time2 and answer not working
 				//end_time2 shows up as NaN
 				//answer shows up as "" even if you comment out the following line
 				//xonscreen = true;
-				answer = ""; //isn't clearing the text box properly
+				input.value = "";
+				//answer = ""; //isn't clearing the text box properly
+				stage.addChild(display);
+				stage.update();
+				listen = false;
 				setTimeout(runSmallTrial, 2000); //fix?
 				}
 			}
 
+		if (listen) {
+			createjs.Ticker.on("tick", handleTick);
 
-		createjs.Ticker.on("tick", handleTick);
+		}
 	}
 
 	runSmallTrial();
