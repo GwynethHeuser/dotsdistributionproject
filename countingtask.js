@@ -6,7 +6,7 @@ function init() {
 	data = []; //contains the trial number, RT of space bar press, RT of number input, subject input, exact number of Xs, accuracy of subject input, subject's score,
 	//type of cue  (small or big), approx number of dots (small or big)
 
-	var NUMTRIALS = 2;
+	var NUMTRIALS = 4;
 
 	function cueBig() {
 		cueBigsquare = new createjs.Shape();
@@ -66,17 +66,6 @@ function init() {
 
 	var trials = 0;
 
-	var keys = {};
-	this.document.onkeydown = keydown;
-	this.document.onkeyup = keyup;
-
-	function keydown(event) {
-		keys[event.keyCode] = true;
-	}
-
-	function keyup(event) {
-		delete keys[event.keyCode];
-	}
 
 	function runSmallTrial() {
 		stage.removeAllChildren();
@@ -86,10 +75,22 @@ function init() {
 			var square = cueSmall();
 			setTimeout(function() {continueSmallTrial(square)}, 2000);
 		}
-	console.log(data);
+	//console.log(data);
 	}
 
 	function continueSmallTrial(square) {
+
+		var keys = {};
+		this.document.onkeydown = keydown;
+		this.document.onkeyup = keyup;
+
+		function keydown(event) {
+			keys[event.keyCode] = true;
+		}
+
+		function keyup(event) {
+			delete keys[event.keyCode];
+		}
 		stage.removeChild(square);
 		stage.update();
 
@@ -103,11 +104,15 @@ function init() {
 
 		var end_time1 = 0;
 		var end_time2 = 0;
+		var start_time2 = 0;
+
 		var answer = 0;
+		var z = 0;
 
 		function handleTick(event) {
 
 			if (keys[32] & xonscreen) {
+				console.log("I am in the 32");
 				xonscreen = false;
 				var boxonscreen = true;
 				end_time1 = new Date() - start_time1;
@@ -117,16 +122,23 @@ function init() {
 				input.style.display="inline";
 				stage.update();
 				var start_time2 = new Date();
+				keys[32]=false;
 				}
 
 			//find a way to pass start_time2 through to this if statement
-			if (keys[13] & ! xonscreen) {
+			if (keys[13] & !xonscreen) {
+				console.log(z);
+				console.log("I am in the 13");
+				var start_time2 = new Date();
+				z = z+1;
+				console.log(start_time2);
+
 				boxonscreen = false;
 				end_time2 = new Date() - start_time2;
 				input.style.display="none";
 				stage.removeAllChildren();
 				stage.update();
-				trials = trials + 1;
+				
 				var theAccuracy = accuracy(answer, nX);
 				var theScore = score(theAccuracy, end_time1);
 				display.text = "Score:" + theScore;
@@ -137,10 +149,12 @@ function init() {
 				data.push([trials, end_time1, end_time2, answer, nX, theAccuracy, theScore, "small cue", "small number"]); //end_time2 and answer not working
 				//end_time2 shows up as NaN
 				//answer shows up as "" even if you comment out the following line
+				//xonscreen = true;
 				answer = ""; //isn't clearing the text box properly
 				setTimeout(runSmallTrial, 2000); //fix?
 				}
 			}
+
 
 		createjs.Ticker.on("tick", handleTick);
 	}
